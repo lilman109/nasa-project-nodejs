@@ -3,6 +3,9 @@ const app = require("../../app");
 
 describe("Test Get /planets", () => {
   test("It should respond with 200", async () => {
-    await request(app).get("/planets").expect("Content-Type", /json/).expect(200);
+    await request(app)
+      .get("/planets")
+      .expect("Content-Type", /json/)
+      .expect(200);
   });
 });
