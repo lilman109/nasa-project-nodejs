@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 const planetsDatabase = require("./planets.mongo");
+const filteredProperties = require("../constants/mongodbFiltered");
 
 const habitablePlanets = [];
 
@@ -49,7 +50,7 @@ function loadPlanetsData() {
 }
 
 async function getAllPlanets() {
-  return await planetsDatabase.find({}, { "_id": 0, "__v": 0 });
+  return await planetsDatabase.find({}, filteredProperties);
 }
 
 // upserts only inserts if data is not already in data
