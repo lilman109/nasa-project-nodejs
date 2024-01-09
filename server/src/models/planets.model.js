@@ -49,7 +49,7 @@ function loadPlanetsData() {
 }
 
 async function getAllPlanets() {
-  return await planetsDatabase.find({});
+  return await planetsDatabase.find({}, { "_id": 0, "__v": 0 });
 }
 
 // upserts only inserts if data is not already in data

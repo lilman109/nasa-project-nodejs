@@ -15,10 +15,30 @@ const launch = {
   success: true,
 };
 
-launches.set(launch.flightNumber, launch);
+/* launches.set(launch.flightNumber, launch); */
+saveLaunch(launch);
 
-function getAllLaunches() {
-  return Array.from(launches.values());
+async function getAllLaunches() {
+  return await launchesDatabase.find({},{"_id": 0,"__v": 0,});
+}
+
+async function saveLaunch(launch) {
+  console.log("akira launch", launch);
+  try {
+    await launchesDatabase.updateOne(
+      {
+        flightNumber: launch.flightNumber,
+      },
+      {
+        ...launch,
+      },
+      {
+        upsert: true,
+      },
+    );
+  } catch (error) {
+    console.log("Could not save launch");
+  }
 }
 
 function addNewLaunch(launch) {
