@@ -1,4 +1,5 @@
 const launchesDatabase = require("./launches.mongo");
+const planetsDatabase = require("./planets.mongo");
 
 const launches = new Map();
 
@@ -19,11 +20,18 @@ const launch = {
 saveLaunch(launch);
 
 async function getAllLaunches() {
-  return await launchesDatabase.find({},{"_id": 0,"__v": 0,});
+  return await launchesDatabase.find({}, { "_id": 0, "__v": 0 });
 }
 
 async function saveLaunch(launch) {
-  console.log("akira launch", launch);
+  const planet = planetsDatabase.findOne({
+    keplerName: launch.target
+  });
+
+  if (!planet) {
+    throw new Error("No matching planet found")
+  }
+
   try {
     await launchesDatabase.updateOne(
       {
