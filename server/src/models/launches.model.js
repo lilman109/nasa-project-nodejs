@@ -1,3 +1,5 @@
+const launchesDatabase = require("./launches.mongo");
+
 const launches = new Map();
 
 let latesFlighNumber = 100;
