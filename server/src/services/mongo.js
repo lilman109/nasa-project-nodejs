@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+require("dotenv").config();
+
 const MONGO_URL = `mongodb+srv://nasa-api:${process.env.MONGODB_PW}@nasa-project.xmddtyj.mongodb.net/?retryWrites=true&w=majority`;
 
 mongoose.connection.once("open", () => {
@@ -20,5 +22,5 @@ async function mongoDisconnect() {
 
 module.exports = {
   mongoConnect,
-  mongoDisconnect
+  mongoDisconnect,
 };

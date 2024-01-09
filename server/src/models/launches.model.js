@@ -1,7 +1,7 @@
 const launchesDatabase = require("./launches.mongo");
 const planetsDatabase = require("./planets.mongo");
 
-const filteredProperties = require("../constants/mongodbFiltered")
+const filteredProperties = require("../constants/mongodbFiltered");
 
 const DEFAULT_FLIGHT_NUMBER = 100;
 
@@ -35,7 +35,7 @@ async function getLatestFlightNumber() {
 }
 
 async function saveLaunch(launch) {
-  const planet = planetsDatabase.findOne({
+  const planet = await planetsDatabase.findOne({
     keplerName: launch.target,
   });
 

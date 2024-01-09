@@ -2,8 +2,6 @@ const request = require("supertest");
 const app = require("../../app");
 const { mongoConnect, mongoDisconnect } = require("../../services/mongo");
 
-// TODO: fix test
-
 describe("Launches Api", () => {
   beforeAll(async () => {
     await mongoConnect();
@@ -12,8 +10,9 @@ describe("Launches Api", () => {
   afterAll(async () => {
     await mongoDisconnect();
   });
+
   describe("Test Get /launches", () => {
-    test("It should respond with 200 succcess", async () => {
+    test("It should respond with 200 success", async () => {
       await request(app)
         .get("/launches")
         .expect("Content-Type", /json/)
@@ -25,28 +24,29 @@ describe("Launches Api", () => {
     const completeLaunchData = {
       mission: "USS Enterprise",
       rocket: "NCC 1701-D",
-      target: "Kepler 162 -f",
+      target: "Kepler-1652 -f",
       launchDate: "January 4, 2024",
     };
 
     const launchDataWithoutDate = {
       mission: "USS Enterprise",
       rocket: "NCC 1701-D",
-      target: "Kepler 162 -f",
+      target: "Kepler-1652 -f",
     };
 
     const launchDataWithInvalidDate = {
       mission: "USS Enterprise",
       rocket: "NCC 1701-D",
-      target: "Kepler 162 -f",
+      target: "Kepler-1652 -f",
       launchDate: "hoge",
     };
 
-    test("It should respond with 201 succcess", async () => {
+    test("It should respond with 201 success", async () => {
       const response = await request(app)
         .post("/launches")
         .send(completeLaunchData)
-        .expect("Content-Type", /json/);
+        .expect("Content-Type", /json/)
+        .expect(201);
 
       const requestDate = new Date(completeLaunchData.launchDate).valueOf();
       const responseDate = new Date(response.body.launchDate).valueOf();
