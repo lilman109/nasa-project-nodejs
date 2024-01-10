@@ -24,35 +24,41 @@ describe("Launches Api", () => {
     const completeLaunchData = {
       mission: "USS Enterprise",
       rocket: "NCC 1701-D",
-      target: "Kepler-1652 -f",
+      target: "Kepler-1652 b",
       launchDate: "January 4, 2024",
     };
 
     const launchDataWithoutDate = {
       mission: "USS Enterprise",
       rocket: "NCC 1701-D",
-      target: "Kepler-1652 -f",
+      target: "Kepler-1652 b",
     };
 
     const launchDataWithInvalidDate = {
       mission: "USS Enterprise",
       rocket: "NCC 1701-D",
-      target: "Kepler-1652 -f",
+      target: "Kepler-1652 b",
       launchDate: "hoge",
     };
 
     test("It should respond with 201 success", async () => {
-      const response = await request(app)
-        .post("/launches")
-        .send(completeLaunchData)
-        .expect("Content-Type", /json/)
-        .expect(201);
+      try {
+        const response = await request(app)
+          .post("/launches")
+          .send(completeLaunchData)
+          .expect("Content-Type", /json/)
+          .expect(201);
 
-      const requestDate = new Date(completeLaunchData.launchDate).valueOf();
-      const responseDate = new Date(response.body.launchDate).valueOf();
-      expect(responseDate).toBe(requestDate);
+        const requestDate = new Date(completeLaunchData.launchDate).valueOf();
+        const responseDate = new Date(response.body.launchDate).valueOf();
+        expect(responseDate).toBe(requestDate);
 
-      expect(response.body).toMatchObject(launchDataWithoutDate);
+        expect(response.body).toMatchObject(launchDataWithoutDate);
+      } catch (error) {
+        // Log the error for better understanding
+        console.error("Error in test:", error);
+        throw error; // Rethrow the error to fail the test
+      }
     });
 
     test("It should catch missing required properties", async () => {

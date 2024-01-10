@@ -19,7 +19,9 @@ const launch = {
 };
 
 /* launches.set(launch.flightNumber, launch); */
-saveLaunch(launch);
+/* async function populateLaunches() { */
+/*   await saveLaunch(launch); */
+/* } */
 
 async function getAllLaunches() {
   return await launchesDatabase.find({}, filteredProperties);
