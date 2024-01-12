@@ -9,24 +9,28 @@ const DEFAULT_FLIGHT_NUMBER = 100;
 
 const launches = new Map();
 
-const launch = {
-  flightNumber: 100, // flight_number
-  mission: "Kepler Exploration X", // name
-  rocket: "Explorer IS1", // rocket.name
-  launchDate: new Date("December 27, 2030"), // date_local
-  target: "Kepler-442 b", // not appliable
-  customers: ["ZTM", "NASA"], // payload.customers
-  upcoming: true, // upcoming
-  success: true, // success
-};
+/* const launch = { */
+/*   flightNumber: 100, // flight_number */
+/*   mission: "Kepler Exploration X", // name */
+/*   rocket: "Explorer IS1", // rocket.name */
+/*   launchDate: new Date("December 27, 2030"), // date_local */
+/*   target: "Kepler-442 b", // not appliable */
+/*   customers: ["ZTM", "NASA"], // payload.customers */
+/*   upcoming: true, // upcoming */
+/*   success: true, // success */
+/* }; */
 
 /* launches.set(launch.flightNumber, launch); */
 /* async function populateLaunches() { */
 /*   await saveLaunch(launch); */
 /* } */
 
-async function getAllLaunches() {
-  return await launchesDatabase.find({}, filteredProperties);
+async function getAllLaunches(skip, limit) {
+  return await launchesDatabase
+    .find({}, filteredProperties)
+    .sort({ flightNumber: 1 })
+    .skip(skip)
+    .limit(limit);
 }
 
 async function getLatestFlightNumber() {
