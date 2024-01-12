@@ -66,7 +66,7 @@ async function populateLaunches() {
     },
   });
 
-  if (response.status !== 200) {
+  if (res.status !== 200) {
     console.log("There was a problem downloading launch data");
     throw new Error("Launch data download failed");
   }
@@ -88,7 +88,7 @@ async function populateLaunches() {
       success: launchDoc["success"],
       customers,
     };
-    /* console.log(`${launch.flightNumber} ${launch.mission}`); */
+    console.log(`${launch.flightNumber} ${launch.mission}`);
 
     await saveLaunch(launch);
   }
