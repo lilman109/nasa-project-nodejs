@@ -39,7 +39,7 @@ async function getLatestFlightNumber() {
 }
 
 const SPACEX_API_URL = "https://api.spacexdata.com/v4/launches/query";
-async function loadLaunchesData() {
+async function populateLaunches() {
   console.log("Downloading spacex launch data");
   const res = await axios.post(SPACEX_API_URL, {
     query: {},
@@ -62,6 +62,11 @@ async function loadLaunchesData() {
     },
   });
 
+  if (response.status !== 200) {
+    console.log("There was a problem downloading launch data");
+    throw new Error("Launch data download failed");
+  }
+
   const launchDocs = res.data.docs;
 
   for (const launchDoc of launchDocs) {
@@ -79,21 +84,32 @@ async function loadLaunchesData() {
       success: launchDoc["success"],
       customers,
     };
-    console.log(`${launch.flightNumber} ${launch.mission}`);
+    /* console.log(`${launch.flightNumber} ${launch.mission}`); */
+
+    await saveLaunch(launch);
   }
 }
 
-async function saveLaunch(launch) {
-  const planet = await planetsDatabase.findOne({
-    keplerName: launch.target,
+async function loadLaunchesData() {
+  const firstLaunch = await findLaunch({
+    flightNumber: 1,
+    rocket: "Falcon 1",
+    mission: "FalconSat",
   });
 
-  console.log("planet", planet);
-
-  if (!planet) {
-    throw new Error("No matching planet found");
+  if (firstLaunch) {
+    console.log("first launch exists");
+    return;
+  } else {
+    await populateLaunches();
   }
+}
 
+async function findLaunch(filter) {
+  return await launchesDatabase.findOne(filter);
+}
+
+async function saveLaunch(launch) {
   try {
     await launchesDatabase.findOneAndUpdate(
       {
@@ -110,6 +126,16 @@ async function saveLaunch(launch) {
 }
 
 async function scheduleNewLaunch(launch) {
+  const planet = await planetsDatabase.findOne({
+    keplerName: launch.target,
+  });
+
+  console.log("planet", planet);
+
+  if (!planet) {
+    throw new Error("No matching planet found");
+  }
+
   const newFlightNumber = (await getLatestFlightNumber()) + 1;
   const newLaunch = {
     ...launch,
@@ -157,7 +183,7 @@ async function abortLaunch(launchId) {
 /* } */
 
 async function launchExists(launchId) {
-  const exists = await launchesDatabase.findOne({ flightNumber: launchId });
+  const exists = await findLaunch({ flightNumber: launchId });
   if (!exists) {
     console.log("does not exist");
   }
