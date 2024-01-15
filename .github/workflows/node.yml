@@ -8,14 +8,28 @@ on:
 
 jobs:
   build:
+    env:
+      CI: true # Disables watch mode from react app test script
+
+    strategy:
+      matrix:
+        node-version: [18.16.0]
+
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js version 18.16.0
+      - name: Use Node.js version ${{matrix.node-version}}
         uses: actions/setup-node@v4
         with:
-          node-version: "18.16.0"
-      - run: npm install
-      - run: npm run build --prefix client
+          node-version: ${{matrix.node-version}}
+
+      - name: Install npm packes
+        run: npm install
+
+      - name: Build client
+        run: npm run build --prefix client
+
+      - name: Run tests
+        run: npm test
